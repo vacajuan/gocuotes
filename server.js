@@ -51,7 +51,7 @@ app.get('/verify', (req, res) => {
 });
 
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 6001;
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en el puerto http://localhost:${port}`);
